@@ -4,7 +4,7 @@ import AddToDo from './components/AddToDo';
 
 function App() {
   return (
-    <div className="App">
+    <div>
       <AddToDo />
     </div>
   );

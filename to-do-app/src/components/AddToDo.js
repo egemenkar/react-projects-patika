@@ -1,11 +1,13 @@
-import { useState } from 'react'
-import FilterToDos from './FilterToDos'
+import { useState} from 'react'
 import ToDoList from './ToDoList'
 
 export default function AddToDo() {
   
   const [todo, setTodo] = useState({todo: "", isDone: false})
-  const [toDoList, setToDoList] = useState([])
+  const [toDoList, setToDoList] = useState(() => {
+    const savedTodos = localStorage.getItem("todos")
+    return JSON.parse(savedTodos)
+  })
 
   const changeHandler = (e) => {
     setTodo({todo: e.target.value, isDone: false})
@@ -20,12 +22,14 @@ export default function AddToDo() {
   }
 
   return (
-    <div>
-      <form onSubmit={submitHandler}>
-        <input type="text" value={todo.todo} onKeyDown={submitHandler} placeholder="What needs to be done?" onChange={changeHandler} />
-      </form>
+    <section className="todoapp">
+      <header className="header">
+        <h1>todos</h1>
+        <form onSubmit={submitHandler}>
+          <input className="new-todo" type="text" value={todo.todo} onKeyDown={submitHandler} placeholder="What needs to be done?" onChange={changeHandler} autoFocus/>
+        </form>
+      </header>
       <ToDoList toDoList={toDoList} setToDoList={setToDoList} />
-      <FilterToDos />
-    </div>
+    </section>
   )
 }
