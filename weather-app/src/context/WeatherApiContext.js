@@ -8,39 +8,47 @@ const WeatherApiContext = createContext();
 
 export const WeatherApiProvider = ({children}) => {
 
-  const city = useSearchCity();
+  const city = useSearchCity()
  
-  const [data, setData] = useState({})
+  const [data, setData] = useState([])
+
+  const [geo, setGeo] = useState({ 
+    lat: 39.9199,
+    lon: 32.8543
+  })
+  
   const [loading, setLoading] = useState(true)
 
-useEffect(() => {
-    fetchData();
-  }, [])
-
-  useEffect(() => {
-    fetchData();
-  }, [city])
+  const [dailyData, setDailyData] = useState({})
 
   
 
-  const fetchData = async () =>{
+  useEffect(() => {
+    
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
+  
+      axios.get(url)
+        .then(res => res.data)
+        .then(data => {
+          const url1 = `https://api.openweathermap.org/data/2.5/onecall?lat=${data.coord.lat}&lon=${data.coord.lon}&exclude=hourly,minutely,alerts&units=metric&appid=${apiKey}`;
+      
+      axios.get(url1)
+         .then(res => res.data)
+         .then(data => {
+           setData(data);
+           setLoading(false);
+         });
+      });
+  }, [city]);
 
-    try {
-      const res = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`)
-      setData(res.data)
-      setLoading(false)
-    } catch (error) {
-      console.error(error.message);
-    }
-
-  }
+  
   
   const values = {
     data: data,
     loading: loading,
   }
 
-
+  //!loading && console.log(dailyData)
   
   return (<WeatherApiContext.Provider value={values}>
     
