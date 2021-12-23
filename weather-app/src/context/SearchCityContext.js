@@ -8,17 +8,28 @@ export const SearchCityProvider = ({children}) => {
   const [city, setCity] = useState("Ankara")
 
   const handleSubmit = () => {
-    setCity(search);
+
+    let cityName = search.toLowerCase();
+    let wordsArr = cityName.split(" ");
+    for(let i = 0; i < wordsArr.length; i++) {
+      wordsArr[i] = wordsArr[i].charAt(0).toUpperCase() + wordsArr[i].slice(1);
+    }
+
+    setCity(wordsArr.join(" "));
     setSearch("");
   }
+
+  const cityValues = {
+    city: city,
+    setCity: setCity
+  }
   
-  return (<SearchCityContext.Provider value={city}>
-    <input type="text" value={search} placeholder="Search for A City..." onChange={({target}) => setSearch(target.value)}></input>
-    <button onClick={handleSubmit}>Search</button>
-    {children}
-
-    <br />
-
+  return (<SearchCityContext.Provider value={cityValues}>
+      <div className="search-city">
+        <input type="text" value={search} placeholder="Search for a city..." onChange={({target}) => setSearch(target.value)}></input>
+        <button onClick={handleSubmit}>Search</button>
+      </div>
+      {children}
     </SearchCityContext.Provider>)
 }
 
